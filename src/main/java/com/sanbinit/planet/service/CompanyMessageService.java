@@ -17,4 +17,8 @@ public class CompanyMessageService {
         companymessage.setCMindex(cmindex);
         return companyMessageMapper.select(companymessage);
     }
+
+    public int createOneCompanyMessage(CompanyMessage companyMessage){
+        return companyMessageMapper.insert(companyMessage);
+    }
 }

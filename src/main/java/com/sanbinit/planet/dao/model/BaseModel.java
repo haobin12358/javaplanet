@@ -6,11 +6,11 @@ import javax.persistence.Transient;
 
 public class BaseModel {
 
-    private Byte isdelete;
+    private int isdelete;
     private DateTime createtime;
     private DateTime updatetime;
 
-    public Byte getIsdelete() {
+    public int getIsdelete() {
         return isdelete;
     }
 
@@ -22,7 +22,7 @@ public class BaseModel {
         return updatetime;
     }
 
-    public void setIsdelete(Byte isdelete) {
+    public void setIsdelete(int isdelete) {
         this.isdelete = isdelete;
     }
 
@@ -31,6 +31,12 @@ public class BaseModel {
     }
 
     public void setUpdatetime(DateTime updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public void setAll(int isdelete, DateTime createtime, DateTime updatetime){
+        this.isdelete = isdelete;
+        this.createtime = createtime;
         this.updatetime = updatetime;
     }
 }
