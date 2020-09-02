@@ -11,7 +11,7 @@
         <property name="endingDelimiter" value="`"/>
 
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="com.mybatis.planet.util.MyMapper"/>
+            <property name="mappers" value="com.sanbinit.planet.util.MyMapper"/>
             <property name="caseSensitive" value="true" />
         </plugin>
 
@@ -25,7 +25,7 @@
 
         <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
 
-        <javaClientGenerator targetPackage="com.danbinit.planet.dao.mapper" targetProject="src/main/java"
+        <javaClientGenerator targetPackage="com.sanbinit.planet.dao.mapper" targetProject="src/main/java"
                              type="XMLMAPPER"/>
 
     </context>
