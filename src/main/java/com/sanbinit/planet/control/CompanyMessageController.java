@@ -5,6 +5,7 @@ import com.sanbinit.planet.dao.model.BaseModel;
 import com.sanbinit.planet.dao.model.CompanyMessage;
 import com.sanbinit.planet.dao.response.Success;
 import com.sanbinit.planet.service.CompanyMessageService;
+import com.sanbinit.planet.util.UserToken;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,6 @@ public class CompanyMessageController {
     public PageInfo<CompanyMessage> getAll(@RequestParam int cmindex,
                                            CompanyMessage companyMessage){
         List<CompanyMessage> companyMessageList = companyMessageService.getAllCompanyMessage(companyMessage, cmindex);
-        //logger.error(Integer.toString(cmindex));
         return new PageInfo<CompanyMessage>(companyMessageList);
     }
 
