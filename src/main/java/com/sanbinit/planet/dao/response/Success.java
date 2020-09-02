@@ -5,6 +5,7 @@ public class Success {
     private int status;
     private String message;
     private int status_code;
+    private Object data;
 
     public int getStatus() {
         return status;
@@ -28,5 +29,13 @@ public class Success {
 
     public void setStatus_code(int status_code) {
         this.status_code = status_code;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 }

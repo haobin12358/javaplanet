@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-//TODO 待封装
 @RestController
 @RequestMapping("/club")
 public class CompanyMessageController {
