@@ -2,23 +2,28 @@ package com.sanbinit.planet.dao.model;
 
 import org.joda.time.DateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Transient;
+import java.util.Date;
 
 public class BaseModel {
 
+    @Column(name="isdelete")
     private int isdelete;
-    private DateTime createtime;
-    private DateTime updatetime;
+    @Column(name="createtime")
+    private Date createtime;
+    @Column(name="updatetime")
+    private Date updatetime;
 
     public int getIsdelete() {
         return isdelete;
     }
 
-    public DateTime getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public DateTime getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
@@ -26,17 +31,12 @@ public class BaseModel {
         this.isdelete = isdelete;
     }
 
-    public void setCreatetime(DateTime createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
-    public void setUpdatetime(DateTime updatetime) {
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
-    public void setAll(int isdelete, DateTime createtime, DateTime updatetime){
-        this.isdelete = isdelete;
-        this.createtime = createtime;
-        this.updatetime = updatetime;
-    }
 }

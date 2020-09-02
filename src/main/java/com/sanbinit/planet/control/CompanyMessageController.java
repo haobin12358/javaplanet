@@ -1,6 +1,7 @@
 package com.sanbinit.planet.control;
 
 import com.github.pagehelper.PageInfo;
+import com.sanbinit.planet.dao.model.BaseModel;
 import com.sanbinit.planet.dao.model.CompanyMessage;
 import com.sanbinit.planet.dao.response.Success;
 import com.sanbinit.planet.service.CompanyMessageService;
@@ -10,14 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 //TODO 待封装
 @RestController
-@RequestMapping("api/v2/club")
+@RequestMapping("/club")
 public class CompanyMessageController {
-
 
     //实例化CompanyMessageService
     @Autowired
@@ -39,7 +40,9 @@ public class CompanyMessageController {
     @PostMapping("/create_message")
     public Success createOne(@RequestBody CompanyMessage companyMessageResponse,
                              CompanyMessage companyMessage){
-        companyMessage.setAll(0, DateTime.now(), DateTime.now());
+        companyMessage.setIsdelete(0);
+        companyMessage.setCreatetime(new Date());
+        companyMessage.setUpdatetime(new Date());
         companyMessage.setCMid(UUID.randomUUID().toString());
         companyMessage.setCMtitle(companyMessageResponse.getCMtitle());
         companyMessage.setCMindex(companyMessageResponse.getCMindex());
