@@ -2,13 +2,20 @@ package com.sanbinit.planet.dao.model;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
-import javax.xml.soap.Text;
-import java.awt.*;
-import java.beans.Transient;
+import java.util.Date;
 
 @Table(name="CompanyMessage")
 public class CompanyMessage extends BaseModel{
 
+    /*
+    @Column(name="isdelete")
+    private int isdelete;
+    @Column(name="createtime")
+    private Date createtime;
+    @Column(name="updatetime")
+    private Date updatetime;
+
+     */
     @Column(name="CMid")
     private String CMid;
     @Column(name="CMtitle")
@@ -59,4 +66,31 @@ public class CompanyMessage extends BaseModel{
     public void setCMreadnum(Integer CMreadnum) {
         this.CMreadnum = CMreadnum;
     }
+
+/*
+    public int getIsdelete() {
+        return isdelete;
+    }
+
+    public void setIsdelete(int isdelete) {
+        this.isdelete = isdelete;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+ */
 }
