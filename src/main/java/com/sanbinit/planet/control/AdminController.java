@@ -5,9 +5,12 @@ import com.sanbinit.planet.dao.Enum.ADstatus;
 import com.sanbinit.planet.dao.model.Admin;
 import com.sanbinit.planet.dao.response.Success;
 import com.sanbinit.planet.service.AdminService;
+import com.sanbinit.planet.util.EntityisEmpty;
 import com.sanbinit.planet.util.PasswordToHash;
 import com.sanbinit.planet.util.UserToken;
 import netscape.javascript.JSException;
+import org.aspectj.bridge.IMessage;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONException;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user")
@@ -33,23 +34,25 @@ public class AdminController {
 
     Success success = new Success();
 
+    EntityisEmpty entityisEmpty = new EntityisEmpty();
+
     private Logger logger = LoggerFactory.getLogger(AdminController.class);
 
-    EnumMap aDlevelEnum = new EnumMap(ADlevel.class);
-
     @PostMapping("/admin_login")
-    public JSONObject adminLogin(@RequestBody Admin adminResponse, Admin admin) throws NoSuchAlgorithmException{
-        Admin adminMessage = adminService.getOneAdmin(admin, adminResponse.getADname());
-        String adjavapassword = adminMessage.getADjavapassword();
-        String adsalt = adminMessage.getADsalt();
+    public JSONObject adminLogin(@RequestBody Admin adminResponse) throws NoSuchAlgorithmException{
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("ADname", adminResponse.getADname());
+        Admin admin = adminService.getOneAdmin(map);
+        String adjavapassword = admin.getADjavapassword();
+        String adsalt = admin.getADsalt();
         String str_password = adminResponse.getADpassword();
         if(passwordToHash.check_password_hash(adsalt, str_password, adjavapassword)){
             JSONObject jsonObject = new JSONObject();
             JSONObject jsonObject_admin = new JSONObject();
-            StringBuffer adheader = new StringBuffer(adminMessage.getADheader());
-            StringBuffer adlevel = new StringBuffer(getAdlevelName(adminMessage.getADlevel()));
-            StringBuffer adname = new StringBuffer(adminMessage.getADname());
-            StringBuffer adstatus = new StringBuffer(getAdstatusName(adminMessage.getADstatus()));
+            StringBuffer adheader = new StringBuffer(admin.getADheader());
+            StringBuffer adlevel = new StringBuffer(getAdlevelName(admin.getADlevel()));
+            StringBuffer adname = new StringBuffer(admin.getADname());
+            StringBuffer adstatus = new StringBuffer(getAdstatusName(admin.getADstatus()));
             try {
                 jsonObject_admin.put("adheader", adheader);
                 jsonObject_admin.put("adlevel", adlevel);
@@ -59,13 +62,14 @@ public class AdminController {
                 logger.error("admin json error");
                 throw new JSException();
             }
-            Date date = new Date();
-            date.setTime(1000*60*60);
+            DateTime datetime = new DateTime();
+            datetime = datetime.plusHours(1);
+            Date date = datetime.toDate();
             String token_str = userToken.usidtoToken(
-                    adminMessage.getADid(),
+                    admin.getADid(),
                     "Admin",
-                    Integer.toString(adminMessage.getADlevel()),
-                    adminMessage.getADname(),
+                    Integer.toString(admin.getADlevel()),
+                    admin.getADname(),
                     date);
             StringBuffer token = new StringBuffer(token_str);
             try {
@@ -102,9 +106,53 @@ public class AdminController {
     }
 
     @PostMapping("/add_admin_by_superadmin")
-    public JSONObject addAdmin(@RequestBody Admin adminResponse, @RequestParam String token, Admin admin){
-        Map<String, String> adminMap = userToken.tokenToUser(token);
-        String usid = adminMap.get("id");
-        return success.json_success(200, 0, "创建成功");
+    public JSONObject addAdmin(@RequestBody Admin adminResponse, @RequestParam String token, Admin admin) throws NoSuchAlgorithmException {
+        Map<String, String> tokenMap = userToken.tokenToUser(token);
+        String adid = tokenMap.get("id");
+        String model = tokenMap.get("model");
+        if(!model.equals("Admin")){
+            return success.json_success(405, 405002, "无权限");
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("ADid", adid);
+        Admin adminMessage;
+        adminMessage = adminService.getOneAdmin(map);
+        if(adminMessage.getADlevel() != 1){
+            return success.json_success(405, 405002, "无权限");
+        }
+        map.remove("ADid");
+        map.put("ADname", adminResponse.getADname());
+        adminMessage = adminService.getOneAdmin(map);
+        if(entityisEmpty.checkObjFieldIsNotNull(adminMessage)){
+            return success.json_success(405, 405003, "用户名重复");
+        }
+        map.remove("ADname");
+        map.put("ADtelphone", adminResponse.getADtelphone());
+        adminMessage = adminService.getOneAdmin(map);
+        if(entityisEmpty.checkObjFieldIsNotNull(adminMessage)){
+            return success.json_success(405, 405004, "手机号重复");
+        }
+        admin.setIsdelete(0);
+        admin.setCreatetime(new Date());
+        admin.setUpdatetime(new Date());
+        admin.setADname(adminResponse.getADname());
+        admin.setADheader(adminResponse.getADheader());
+        admin.setADlevel(2);
+        admin.setADnum(0);
+        admin.setADid(UUID.randomUUID().toString());
+        String adsalt = UUID.randomUUID().toString();
+        admin.setADsalt(adsalt);
+        String adjavapassword = passwordToHash.make_password_hash(adsalt, adminResponse.getADpassword());
+        admin.setADjavapassword(adjavapassword);
+        admin.setADstatus(0);
+        admin.setADtelphone(adminResponse.getADtelphone());
+        admin.setADpassword(adjavapassword);
+        int code = adminService.createOneAdmin(admin);
+        if(code == 1){
+            return success.json_success(200, 0, "创建成功");
+        }else{
+            return success.json_success(405, 405005, "创建失败");
+        }
+
     }
 }
