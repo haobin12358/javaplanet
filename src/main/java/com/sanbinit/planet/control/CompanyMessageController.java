@@ -1,5 +1,6 @@
 package com.sanbinit.planet.control;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.sanbinit.planet.dao.model.BaseModel;
 import com.sanbinit.planet.dao.model.CompanyMessage;
@@ -37,8 +38,8 @@ public class CompanyMessageController {
     }
 
     @PostMapping("/create_message")
-    public Success createOne(@RequestBody CompanyMessage companyMessageResponse,
-                             CompanyMessage companyMessage){
+    public JSONObject createOne(@RequestBody CompanyMessage companyMessageResponse,
+                                CompanyMessage companyMessage){
         companyMessage.setIsdelete(0);
         companyMessage.setCreatetime(new Date());
         companyMessage.setUpdatetime(new Date());
@@ -49,15 +50,9 @@ public class CompanyMessageController {
         companyMessage.setCMreadnum(0);
         int code = companyMessageService.createOneCompanyMessage(companyMessage);
         if(code == 1){
-            success.setStatus(200);
-            success.setMessage("创建成功");
-            success.setStatus_code(200);
-            return success;
+            return success.json_success(200,0,"创建成功");
         }else{
-            success.setStatus(405);
-            success.setStatus_code(405001);
-            success.setMessage("创建失败");
-            return success;
+            return success.json_success(405,405100,"创建失败");
         }
     }
 }
