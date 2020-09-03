@@ -1,41 +1,17 @@
 package com.sanbinit.planet.dao.response;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class Success {
 
-    private int status;
-    private String message;
-    private int status_code;
-    private Object data;
+    public JSONObject json_success(int status, int status_code, String message){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status", status);
+        if(status_code != 0){
+            jsonObject.put("status_code", status_code);
+        }
+        jsonObject.put("message", message);
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public int getStatus_code() {
-        return status_code;
-    }
-
-    public void setStatus_code(int status_code) {
-        this.status_code = status_code;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
+        return jsonObject;
     }
 }
