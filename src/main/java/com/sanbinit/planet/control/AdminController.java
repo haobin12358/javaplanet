@@ -203,7 +203,38 @@ public class AdminController {
 
     //管理员更新密码
     @PostMapping("/update_admin_password")
-    public JSONObject updatePassword(@RequestBody JSONObject jsonObject, @RequestParam String token){
-        return success.json_success(200, 0, "更新成功");
+    public JSONObject updatePassword(@RequestBody JSONObject jsonObject, @RequestParam String token) throws NoSuchAlgorithmException {
+        //判断是否为管理员
+        if(!userToken.isAdmin(token)){
+            return success.json_success(405, 405002, "无权限");
+        }
+        Map<String, String> map = userToken.tokenToUser(token);
+        String adid = map.get("id");
+        //判断两次输入的新密码是否相同
+        if(!jsonObject.getString("password_new").equals(jsonObject.getString("password_repeat"))){
+            return success.json_success(405, 405006, "两次密码输入不同");
+        }
+        Admin admin = new Admin();
+        Map<String, Object> admin_map = new HashMap<>();
+        admin_map.put("ADid", adid);
+        Admin adminMessage = adminService.getOneAdmin(admin_map, admin);
+        String adsalt = adminMessage.getADsalt();
+        //判断密码是否正确
+        if(passwordToHash.check_password_hash(adsalt, jsonObject.getString("password_old"), adminMessage.getADjavapassword())){
+            //设置要更新的内容
+            admin.setUpdatetime(new Date());
+            String adsalt_new = UUID.randomUUID().toString();
+            admin.setADsalt(adsalt);
+            String javapassword = passwordToHash.make_password_hash(adsalt_new, jsonObject.getString("password_new"));
+            admin.setADjavapassword(javapassword);
+            int code = adminService.updateOneAdmin(admin_map, admin);
+            if(code == 1){
+                return success.json_success(200, 0, "重置密码成功");
+            }else{
+                return success.json_success(405, 405007, "重置密码失败");
+            }
+        }else {
+            return success.json_success(405, 405001, "原密码错误");
+        }
     }
 }
