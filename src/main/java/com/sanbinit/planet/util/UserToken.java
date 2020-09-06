@@ -63,4 +63,29 @@ public class UserToken {
         return resultMap;
     }
 
+    public Boolean isAdmin(String token){
+        Map<String, String> tokenMap = tokenToUser(token);
+        String model = tokenMap.get("model");
+        return model.equals("Admin");
+    }
+
+    public Boolean isSuperAdmin(String token){
+        Map<String, String> tokenMap = tokenToUser(token);
+        String model = tokenMap.get("model");
+        String level = tokenMap.get("level");
+        return model.equals("Admin") && level.equals("1");
+    }
+
+    public Boolean isUser(String token){
+        Map<String, String> tokenMap = tokenToUser(token);
+        String model = tokenMap.get("model");
+        return model.equals("User");
+    }
+
+    public Boolean isSupplizer(String token){
+        Map<String, String> tokenMap = tokenToUser(token);
+        String model = tokenMap.get("model");
+        return model.equals("Supplizer");
+    }
+
 }
