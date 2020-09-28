@@ -1,4 +1,4 @@
-package com.sanbinit.planet.control;
+package com.sanbinit.planet.controller;
 
 import com.sanbinit.planet.dao.Enum.ADlevel;
 import com.sanbinit.planet.dao.Enum.ADstatus;
@@ -9,7 +9,6 @@ import com.sanbinit.planet.util.EntityisEmpty;
 import com.sanbinit.planet.util.PasswordToHash;
 import com.sanbinit.planet.util.UserToken;
 import netscape.javascript.JSException;
-import org.aspectj.bridge.IMessage;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -236,5 +235,16 @@ public class AdminController {
         }else {
             return success.json_success(405, 405001, "原密码错误");
         }
+    }
+
+    //获取管理员列表
+    @GetMapping("/get_admin_list")
+    public JSONObject get_admin_list(@RequestParam String token, @RequestParam String page_num, @RequestParam String page_size){
+        //判断是否为管理员
+        if(!userToken.isAdmin(token)){
+            return success.json_success(405, 405002, "无权限");
+        }
+
+        return success.json_success(200, 0, "获取成功");
     }
 }
