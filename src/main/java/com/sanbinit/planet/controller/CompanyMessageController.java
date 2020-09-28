@@ -1,13 +1,10 @@
-package com.sanbinit.planet.control;
+package com.sanbinit.planet.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
-import com.sanbinit.planet.dao.model.BaseModel;
 import com.sanbinit.planet.dao.model.CompanyMessage;
 import com.sanbinit.planet.dao.response.Success;
 import com.sanbinit.planet.service.CompanyMessageService;
-import com.sanbinit.planet.util.UserToken;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

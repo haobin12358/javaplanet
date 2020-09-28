@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.spring.annotation.MapperScan;
 
-@Controller
+@RestController
 @SpringBootApplication
 @MapperScan(basePackages = "com.sanbinit.planet.dao.mapper")
 public class PlanetApplication {
